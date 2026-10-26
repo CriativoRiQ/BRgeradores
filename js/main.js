@@ -167,6 +167,34 @@
     mark();
   })();
 
+  /* ---- Fundo em movimento nas seções brancas: malha de pontos com ondas suaves ---- */
+  (function () {
+    var secs = $$('section.lt'); if (!secs.length) return;
+    secs.forEach(function (sec, k) {
+      var cv = document.createElement('canvas'); cv.className = 'wave'; cv.setAttribute('aria-hidden', 'true'); sec.insertBefore(cv, sec.firstChild);
+      var cx = cv.getContext('2d'), W = 0, H = 0, dpr = Math.min(devicePixelRatio || 1, 1.5), on = false, raf = 0, last = 0, ph = k * 1.7;
+      function size() { W = sec.clientWidth; H = sec.clientHeight; cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); draw(performance.now()); }
+      function draw(now) {
+        var t = now / 1000 * .35 + ph, N = Math.max(48, Math.round(W / 11)), M = 36, j, i;
+        cx.clearRect(0, 0, W, H);
+        for (j = 0; j < M; j++) {
+          var d = j / (M - 1), rowY = H * (.44 + .54 * d), amp = H * (.05 + .07 * d), r = .5 + 1.05 * d, a = .1 + .5 * d * d + .15 * d;
+          cx.fillStyle = 'rgba(110,112,120,' + a.toFixed(2) + ')'; cx.beginPath();
+          for (i = 0; i <= N; i++) {
+            var u = i / N, x = u * W, edge = Math.sin(Math.PI * u), rr = r * (.25 + .75 * Math.min(1, edge * 1.6));
+            var y = rowY - amp * (Math.sin(u * 5.2 + t + j * .12) * .6 + Math.sin(u * 9.5 - t * .8 + j * .2) * .25 + Math.sin(u * 2.4 + t * .5) * .5);
+            cx.moveTo(x + rr, y); cx.arc(x, y, rr, 0, 6.2832);
+          }
+          cx.fill();
+        }
+      }
+      function loop(now) { raf = on ? requestAnimationFrame(loop) : 0; if (now - last < 33) return; last = now; draw(now); }
+      if ('ResizeObserver' in window) new ResizeObserver(size).observe(sec); else { size(); addEventListener('resize', size); }
+      if (reduce || !('IntersectionObserver' in window)) return;
+      new IntersectionObserver(function (es) { on = es[0].isIntersecting; if (on && !raf) raf = requestAnimationFrame(loop); }, { rootMargin: '80px' }).observe(sec);
+    });
+  })();
+
   /* ---- WhatsApp + rastreamento de cliques ---- */
   var T = window.BRTrack || { track: function () {}, getUtm: function () { return {}; } };
   function waUrl(extra) {
