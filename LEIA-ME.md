@@ -28,3 +28,4 @@ Enquanto vazio, aparece a logo como espaço reservado. **Pendência: enviar foto
 - Imagens ilustrativas (frota, climatização, corporativo, portfólio) estão turvas com o aviso "Imagem em produção": trocar `img/ph-*.webp` por fotos reais quando houver.
 - Mapa do Google (busca por "BR Geradores 59066-850") e bloco de depoimento (link de avaliação do Google). **Pendência: conferir se o mapa abre no ponto certo; se não, trocar o `src` do iframe pelo embed oficial do Google Maps.**
 - Rodapé: "© Copyright RiQ Tecnologias Digitais. Todos os direitos reservados."
+- Seções brancas têm fundo animado de malha de pontos (canvas leve, pausa fora da tela, estático se o usuário prefere menos movimento).
